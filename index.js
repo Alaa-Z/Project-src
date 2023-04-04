@@ -3,6 +3,9 @@ const app = express();
 const dotenv = require('dotenv');
 const mongoose= require('mongoose');
 
+// Imoport Routes
+const authRoute = require('./routes/auth');
+
 dotenv.config();
 
 // Connect to MongoDB Atlas with Mongoose
@@ -13,13 +16,11 @@ mongoose.connect( process.env.DB_CONNECT, {
 
 mongoose.Promise = global.Promise;
 
-
-// Imoport Routes
-const authRoute = require('./routes/auth');
+// Middleware
+app.use(express.json());
 
 // Route Middlewares
 app.use('/api/user/', authRoute)
-
 
 app.listen(3000, () => {
     console.log("The Server up and running!")
