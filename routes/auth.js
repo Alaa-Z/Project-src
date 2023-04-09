@@ -6,6 +6,8 @@ const bcrypt= require('bcryptjs')
 const {registerValidation, loginValidation} = require('../validation')
 
 
+
+// ROUTE TO REGISTER ACOUNT 
 router.post('/register', async (req, res) => {
 
     // Validate the data 
@@ -40,7 +42,7 @@ router.post('/register', async (req, res) => {
     }
 })
 
-// LOGIN
+// ROUTE TO LOGIN
 router.post('/login', async (req, res) => {
 
     // Validate the data 
