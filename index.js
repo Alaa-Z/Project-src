@@ -15,7 +15,7 @@ app.use((req, res, next) => {
 });
 
 // Imoport Routes
-const authRoute = require('./routes/auth');
+const authRoute = require('./routes/user');
 const adminRouter = require('./routes/admin');
 
 dotenv.config();
