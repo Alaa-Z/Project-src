@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 // import validate
 const {registerValidation, loginValidation} = require('../validation')
 
+// Import authMiddleware 
+const authMiddleware = require('../middleware/auth');
 
 
 // ROUTE TO REGISTER ACOUNT 
@@ -76,4 +78,15 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign({_id: user._id, isAdmin: user.isAdmin}, process.env.TOKEN_SECRET);
     res.header('auth-token', token).send(token);
 })
+
+// ROUTE TO GET USER'S PROFILE
+router.get('/profile', authMiddleware, async (req, res) => {
+    try {
+        // Find the user's profile using id in the JWT token
+        const user = await User.findById(req.user._id).select('-password');
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 module.exports = router;
