@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const User = require('../model/User')
 const bcrypt= require('bcryptjs')
+const jwt = require('jsonwebtoken');
 
 // import validate
 const {registerValidation, loginValidation} = require('../validation')
@@ -62,6 +63,17 @@ router.post('/login', async (req, res) => {
     if(!validPassword){
         return res.status(400).send("Invalid password")
     }
-    res.send("Logged in")
+
+    // Check if the user is an admin
+    if(req.body.email === process.env.ADMIN_EMAIL && req.body.password === process.env.ADMIN_PASSWORD){
+        // Update the value of isAdmin in the database to true
+        user.isAdmin = true;
+        await user.save();  
+    }   
+    // res.send("Logged in")
+    
+    // Create and assign a token
+    const token = jwt.sign({_id: user._id, isAdmin: user.isAdmin}, process.env.TOKEN_SECRET);
+    res.header('auth-token', token).send(token);
 })
 module.exports = router;

@@ -16,6 +16,7 @@ app.use((req, res, next) => {
 
 // Imoport Routes
 const authRoute = require('./routes/auth');
+const adminRouter = require('./routes/admin');
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Route Middlewares
 app.use('/api/user/', authRoute)
+app.use('/api/admin/', adminRouter);
 
 
 
@@ -40,4 +42,5 @@ app.use('/api/user/', authRoute)
 
 app.listen(5000, () => {
     console.log("The Server up and running!")
+    
 })
