@@ -76,7 +76,7 @@ router.post('/login', async (req, res) => {
     
     // Create and assign a token
     const token = jwt.sign({_id: user._id, isAdmin: user.isAdmin}, process.env.TOKEN_SECRET);
-    res.header('auth-token', token).send(token);
+    res.header('auth-token', token).send({ token });
 })
 
 // ROUTE TO GET USER'S PROFILE
