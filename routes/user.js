@@ -84,9 +84,20 @@ router.get('/profile', authMiddleware, async (req, res) => {
     try {
         // Find the user's profile using id in the JWT token
         const user = await User.findById(req.user._id).select('-password');
+
         res.json(user);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
+
+// ROUTE TO LOGOUT
+router.get('/logout', authMiddleware, (req, res) => {
+    // Clear the auth token cookie
+    res.clearCookie('auth-token');
+    res.send('Logged out successfully');
+});
+
+
+
 module.exports = router;
