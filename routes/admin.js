@@ -29,7 +29,13 @@ router.get('/', async (req, res) => {
         }
         // Get all users
         const users = await User.find();
-        res.send(users);
+        // Find the admin using ID stored in the token 
+        const admin = await User.findById(verified._id).select('-password');
+        
+        // send back admin info and users list 
+        const data = { users, admin };
+        res.send(data);
+        
     } catch (err) {
         res.status(400).send('Invalid token.');
     }
