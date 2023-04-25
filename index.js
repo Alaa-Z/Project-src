@@ -3,6 +3,8 @@ const app = express();
 const dotenv = require('dotenv');
 const mongoose= require('mongoose');
 const cors = require('cors')
+// to retrieve a list of the passed router with the set verbs.
+const listEndpoints = require('express-list-endpoints')
 
 // CORS middleware
 app.use(cors());
@@ -38,6 +40,7 @@ app.use('/api/admin/', adminRouter);
 
 
 
+// console.log(listEndpoints(app));
 
 
 app.listen(5000, () => {
