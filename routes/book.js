@@ -71,4 +71,33 @@ router.post('/add', authMiddleware, async (req, res) => {
     }
 });
 
+// ROUTE TO DELETE A BOOK BY ITS OWNER / OR ADMIN
+router.delete('/:id', authMiddleware, async (req, res) => {
+  try {
+    // find the book by id
+    const book = await Book.findById(req.params.id);
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    // Only thr book owner or the admin can delete the book
+    if (book.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(401).json({ message: 'Unauthorized to delete' });
+    }
+
+    // Delete the book from the user's book array
+    const user = await User.findById(book.user);
+    user.books.pull(book._id);
+    await user.save();
+
+    // Delete the book
+    await book.deleteOne();
+
+    res.json({ message: 'Book deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 module.exports = router;
