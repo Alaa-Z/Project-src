@@ -21,6 +21,22 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET BOOK DETAILS
+router.get('/:id', async (req, res) => {
+  try {
+    // find the book and display to whom it belongs
+    const book = await Book.findById(req.params.id).populate('user', 'name');
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+    // return book details
+    res.json(book);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 // ROUTER TO POST A BOOK
 router.post('/add', authMiddleware, async (req, res) => {
     // Validate the data 
@@ -35,7 +51,8 @@ router.post('/add', authMiddleware, async (req, res) => {
         title: req.body.title,
         author: req.body.author,
         ISBN: req.body.ISBN,
-        available: req.body.available || true
+        available: req.body.available || true,
+        user: req.user._id // Set also the user id for the book
     });
    
     // save the book

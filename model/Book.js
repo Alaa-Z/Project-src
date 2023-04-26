@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const User = require('./User');
 
 const bookSchema = new mongoose.Schema({
     title: {
@@ -24,6 +24,10 @@ const bookSchema = new mongoose.Schema({
       type: Boolean,
       required: true,
       default: true
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
     }
 });
 
