@@ -4,16 +4,21 @@ const mongoose = require('mongoose');
 const bookSchema = new mongoose.Schema({
     title: {
       type: String,
-      required: true
+      required: true,
+      min: 2,
+      max: 255
     },
     author: {
       type: String,
-      required: true
+      required: true,
+      min: 2,
+      max: 255
     },
     ISBN: {
       type: String,
       required: true,
-      unique: true
+      min: 10,
+      max: 13
     },
     available: {
       type: Boolean,

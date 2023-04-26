@@ -23,5 +23,17 @@ const loginValidation =  (data) => {
     );
     return schema.validate(data)
 }
+
+const addBookValidation =  (data) => {
+    const schema = Joi.object(
+        {
+            title: Joi.string().min(2).max(255).required(),
+            author: Joi.string().min(2).max(255).required(),
+            ISBN:  Joi.string().min(10).max(13).required()
+        }
+    );
+    return schema.validate(data)
+}
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
+module.exports.addBookValidation = addBookValidation;
