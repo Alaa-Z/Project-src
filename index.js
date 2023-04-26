@@ -19,6 +19,7 @@ app.use((req, res, next) => {
 // Imoport Routes
 const authRoute = require('./routes/user');
 const adminRouter = require('./routes/admin');
+const bookRouter = require('./routes/book');
 
 dotenv.config();
 
@@ -37,7 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 // Route Middlewares
 app.use('/api/user/', authRoute)
 app.use('/api/admin/', adminRouter);
-
+app.use('/api/', bookRouter);
 
 
 // console.log(listEndpoints(app));
