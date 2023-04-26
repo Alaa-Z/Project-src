@@ -27,7 +27,12 @@ const userSchema = new mongoose.Schema({
     isAdmin: {
         type: Boolean,
         default : false
-    }
+    },
+    books: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Book'
+    }],
 });
+
 
 module.exports = mongoose.model('User',userSchema );
