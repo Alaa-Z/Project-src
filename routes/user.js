@@ -83,9 +83,20 @@ router.post('/login', async (req, res) => {
 router.get('/profile', authMiddleware, async (req, res) => {
     try {
         // Find the user's profile using id in the JWT token
-        const user = await User.findById(req.user._id).select('-password');
+        const user = await User.findById(req.user._id).select('-password').populate('books');;
 
-        res.json(user);
+        // res.json(user);
+        res.json({
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            books: user.books.map(book => ({
+                title: book.title,
+                author: book.author,
+                ISBN: book.ISBN,
+                available: book.available
+            })),
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
