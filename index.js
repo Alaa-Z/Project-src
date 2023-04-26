@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 // Route Middlewares
 app.use('/api/user/', authRoute)
 app.use('/api/admin/', adminRouter);
-app.use('/api/', bookRouter);
+app.use('/api/books', bookRouter);
 
 
 // console.log(listEndpoints(app));

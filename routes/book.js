@@ -3,7 +3,7 @@ const Book = require('../model/Book')
 
 
 // ROUTE TO GET ALL BOOKS IN DATABASE
-router.get('/books', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
       // Find all books
       const books = await Book.find();
