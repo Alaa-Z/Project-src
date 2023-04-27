@@ -72,7 +72,7 @@ router.post('/add', authMiddleware, async (req, res) => {
 });
 
 // ROUTE TO DELETE A BOOK BY ITS OWNER / OR ADMIN
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/delete/:id', authMiddleware, async (req, res) => {
   try {
     // find the book by id
     const book = await Book.findById(req.params.id);

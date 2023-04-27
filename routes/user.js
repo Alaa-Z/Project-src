@@ -91,6 +91,7 @@ router.get('/profile', authMiddleware, async (req, res) => {
             email: user.email,
             isAdmin: user.isAdmin,
             books: user.books.map(book => ({
+                _id: book._id,
                 title: book.title,
                 author: book.author,
                 ISBN: book.ISBN,
