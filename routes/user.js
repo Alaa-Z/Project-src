@@ -93,6 +93,7 @@ router.get('/profile', authMiddleware, async (req, res) => {
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
+            address: user.address,
             books: user.books.map(book => ({
                 _id: book._id,
                 title: book.title,
