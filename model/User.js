@@ -29,6 +29,18 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default : false
     },
+    address: {
+        type: String,
+        required: true,
+    },
+    latitude: {
+        type: Number,
+        required: true,
+    },
+    longitude: {
+        type: Number,
+        required: true,
+    },
     books: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Book'
