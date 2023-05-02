@@ -13,7 +13,7 @@ const {addBookValidation} = require('../validation')
 router.get('/', async (req, res) => {
     try {
       // Find all books
-      const books = await Book.find();
+      const books = await Book.find().populate('user', 'name');
       // return all books
       res.json(books);
     } catch (err) {
