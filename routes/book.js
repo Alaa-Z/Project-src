@@ -99,5 +99,35 @@ router.delete('/delete/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// ROUTE To CHANGE STATUS OF A BOOK (LOANED OR AVAILABLE)
+router.put('/status/:id',authMiddleware, async (req, res) => {
+  try{
+     // find the book by id
+     const book = await Book.findById(req.params.id);
+     if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    // Only thr book owner  can edit its status
+    if (book.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: 'Unauthorized to delete' });
+    }
+
+    // toggle the availability of the book(between true and false)
+    book.available = !book.available;
+
+    // save the updated book
+    await book.save();
+
+    // return the updated book
+    res.json(book);
+    // res.json({ message: 'Book status have been changed successfully' });
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: err.message });
+    }
+})
+
 
 module.exports = router;
