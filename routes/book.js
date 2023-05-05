@@ -12,8 +12,8 @@ const {addBookValidation} = require('../validation')
 // ROUTE TO GET ALL BOOKS IN DATABASE
 router.get('/', async (req, res) => {
     try {
-      // Find all books
-      const books = await Book.find().populate('user',['name','address']);
+      // Find all books by last added order
+      const books = await Book.find().sort({addedAt: -1}).populate('user',['name','address']);
       // return all books
       res.json(books);
     } catch (err) {
