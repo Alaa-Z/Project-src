@@ -38,6 +38,19 @@ const addBookValidation =  (data) => {
     );
     return schema.validate(data)
 }
+
+// VALIDATE THE MESSAGE BODY
+const msgsValidation =  (data) => {
+    const schema = Joi.object(
+        {
+            content:  Joi.string().required()
+        }
+    );
+    return schema.validate(data)
+}
+
+
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.addBookValidation = addBookValidation;
+module.exports.msgsValidation = msgsValidation;

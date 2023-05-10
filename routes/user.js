@@ -2,9 +2,11 @@ const router = require('express').Router();
 const User = require('../model/User')
 const bcrypt= require('bcryptjs')
 const jwt = require('jsonwebtoken');
+const Message = require('../model/Message')
+const Conversation = require('../model/Conversation')
 
 // import validate
-const {registerValidation, loginValidation} = require('../validation')
+const {registerValidation, loginValidation, msgsValidation} = require('../validation')
 
 // Import authMiddleware 
 const authMiddleware = require('../middleware/auth');
@@ -90,6 +92,7 @@ router.get('/profile', authMiddleware, async (req, res) => {
 
         // res.json(user);
         res.json({
+            id: user._id,
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
@@ -115,5 +118,102 @@ router.get('/logout', authMiddleware, (req, res) => {
 });
 
 
+
+// SEND MESSAGES BETWEEN 2 USERS
+router.post('/messages/:recipientId', authMiddleware, async (req, res) => {
+
+    // Validate the data 
+    const {error} = msgsValidation(req.body)
+    //   If there is an error 
+    if(error){
+        return res.status(400).send(error.details[0].message)
+    }
+
+  try {
+    const senderId = req.user._id;
+    const recipientId = req.params.recipientId;
+    const content = req.body.content;
+
+    // Check if a conversation between already exists between them
+    let conversation = await Conversation.findOne({
+      users: { $all: [senderId, recipientId] }
+    });
+    
+    // create a new conversation if it is not exisit
+    if (!conversation) {
+      conversation = new Conversation({
+        users: [senderId, recipientId]
+      });
+      await conversation.save();
+    }
+
+    // Create a message then add it to the conversation
+    const message = new Message({
+      conversation: conversation._id,
+      sender: senderId,
+      recipient: recipientId,
+      content
+    });
+    await message.save();
+    conversation.messages.push(message);
+    await conversation.save();
+
+    res.send(message);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+
+// GET ALL CONCERSATIONS FOR A USER
+router.get('/messages', authMiddleware, async (req, res) => {
+    try {
+      const userId = req.user._id;
+      // send from conersation the sender's name
+      const conversations = await Conversation.find({ users: userId })
+        .populate('users', 'name')
+        .populate({
+          path: 'messages',
+          populate: { path: 'sender', select: 'name' }
+        })
+        .exec();
+      res.send(conversations);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
+    }
+});
+
+
+// Get CONVERSATIONS BY ID
+router.get('/messages/:conversationId', authMiddleware, async (req, res) => {
+    try {
+      const userId = req.user._id;
+      const conversationId = req.params.conversationId;
+  
+      // Find the conversation by ID and send from conersation the users sender and recipient 
+      const conversation = await Conversation.findOne({
+        _id: conversationId,
+        users: userId
+      })
+        .populate('users', 'name')
+        .populate({
+          path: 'messages',
+          populate: [
+            { path: 'sender', select: 'name' },
+            { path: 'recipient', select: 'name' }
+        ],
+        });
+  
+      if (!conversation) {
+        return res.status(404).json({ message: 'Not found' });
+      }
+  
+      res.json(conversation);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'error' });
+    }
+});
 
 module.exports = router;
