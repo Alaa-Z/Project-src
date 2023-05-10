@@ -129,5 +129,28 @@ router.put('/status/:id',authMiddleware, async (req, res) => {
     }
 })
 
+// ROUTE TO SEARCH A BOOk BY A KEY WORD
+router.get('/search/:key', async (req, res) => {
+  try {
+    // Search for books by name, author or ISBN
+    const books = await Book.find(
+      {
+      $or: [
+        { title: { $regex: req.params.key } },
+        { author: { $regex: req.params.key } },
+        { ISBN: { $regex: req.params.key } },
+      ],
+      }).populate('user', ['name', 'address']);
+      if (books.length === 0) {
+      return res.status(404).json({ message: 'No Book Found' });
+    }
+    res.json(books);
+    return 
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 
 module.exports = router;

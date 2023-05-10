@@ -165,7 +165,7 @@ router.post('/messages/:recipientId', authMiddleware, async (req, res) => {
   }
 });
 
-// GET ALL CONCERSATIONS FOR A USER
+// GET ALL CONVERSATIONS FOR A USER
 router.get('/messages', authMiddleware, async (req, res) => {
     try {
       const userId = req.user._id;
@@ -185,7 +185,7 @@ router.get('/messages', authMiddleware, async (req, res) => {
 });
 
 
-// Get CONVERSATIONS BY ID
+// GET CONVERSATIONS BY ID
 router.get('/messages/:conversationId', authMiddleware, async (req, res) => {
     try {
       const userId = req.user._id;
