@@ -121,6 +121,11 @@ router.post('/login', async (req, res) => {
         return res.status(400).send("Invalid password")
     }
 
+    // Check if the user has verified their email
+    if (!user.verified) {
+      return res.status(400).send("Please verify your email first.")
+    }
+
     // Check if the user is an admin
     if(req.body.email === process.env.ADMIN_EMAIL && req.body.password === process.env.ADMIN_PASSWORD){
         // Update the value of isAdmin in the database to true
