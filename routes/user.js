@@ -5,6 +5,10 @@ const jwt = require('jsonwebtoken');
 const Message = require('../model/Message')
 const Conversation = require('../model/Conversation')
 
+// For email verification
+const crypto = require('crypto');
+const sgMail = require('@sendgrid/mail');
+
 // import validate
 const {registerValidation, loginValidation, msgsValidation} = require('../validation')
 
@@ -41,14 +45,60 @@ router.post('/register', async (req, res) => {
         longitude: req.body.longitude,
     });
     try {
+        // generate token to use it when verify the email
+        const token = crypto.randomBytes(20).toString('hex');
+        user.verificationToken = token;
+        // make verificationTokenTime valid for 1 hour
+        user.verificationTokenTime = Date.now() + 60 * 60 * 1000; 
+        // set API key
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+        // message setting
+        const msg = {
+        to: user.email,
+        from: 'alaa.kh.zaza@gmail.com', // my email in SendGrid 
+        subject: 'Please Verify your email',
+        text: `Hello ${user.name}, please click on the link below in order to verify your email: http://localhost:5000/api/user/verify/${token}`,
+        };
+        // send the message
+        sgMail.send(msg);
+
+        // Save the user
         const savedUser = await user.save();
         // res.send({ user: user._id })
-        res.json({ message: 'User registered successfully.' });
+        res.json({ message: 'User registered successfully. Please check your email to verify the account.' });
 
     } catch (error) {
         res.status(400).send(error)
     }
 })
+
+// ROUTE FOR VERIFY THE ACCOUNT
+router.get('/verify/:token', async (req, res) => {
+    try {
+        // find th user with the same verificationToken
+        const user = await User.findOne({
+        verificationToken: req.params.token,
+        verificationTokenTime: { $gt: Date.now() },
+        });
+  
+        if (!user) {
+            return res.status(400).send('Verification token is invalid');
+        }
+    
+        // change verified to true
+        user.verified = true;
+        user.verificationToken = undefined;
+        user.verificationTokenTime = undefined;
+  
+        await user.save();
+        res.send('Your account has been verified successfully. You can login now ');
+        } catch (error) {
+        console.error(error);
+        res.status(500).send('Error');
+        }
+  });
+  
 
 // ROUTE TO LOGIN
 router.post('/login', async (req, res) => {

@@ -50,7 +50,17 @@ const userSchema = new mongoose.Schema({
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Conversation'
         }
-    ]
+    ],
+    verified: {
+        type: Boolean,
+        default : false
+    },
+    verificationToken: {
+        type: String
+    },
+    verificationTokenTime:{
+        type: Date
+    }
 });
 
 
