@@ -9,6 +9,9 @@ const Conversation = require('../model/Conversation')
 const crypto = require('crypto');
 const sgMail = require('@sendgrid/mail');
 
+const baseUrl = process.env.APP_BASE_URL || "http://localhost:5000/api"; 
+
+
 // import validate
 const {registerValidation, loginValidation, msgsValidation} = require('../validation')
 
@@ -53,13 +56,15 @@ router.post('/register', async (req, res) => {
         // set API key
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+        const verificationUrl = `${baseUrl}/user/verify/${token}`;
+
         // message setting
         const msg = {
         to: user.email,
         from: 'alaa.kh.zaza@gmail.com', // my email in SendGrid 
         subject: 'Please Verify your email',
-        text: `Hello ${user.name}, please click on the link below in order to verify your email: http://localhost:5000/api/user/verify/${token}`,
-        };
+        text: `Hello ${user.name}, please click on the link below in order to verify your email: ${verificationUrl}`,
+      };
         // send the message
         sgMail.send(msg);
 
