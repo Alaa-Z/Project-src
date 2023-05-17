@@ -60,7 +60,12 @@ const userSchema = new mongoose.Schema({
     },
     verificationTokenTime:{
         type: Date
-    }
+    },
+    acceptedTerms: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
 });
 
 

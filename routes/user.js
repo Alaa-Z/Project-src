@@ -28,6 +28,11 @@ router.post('/register', async (req, res) => {
     if(error) {
         return res.status(400).send(error.details[0].message)
     }
+
+    // Check that the user has accepted the terms
+    if (!req.body.acceptedTerms) {
+      return res.status(400).send("You must accept the terms.");
+    }
     // Check if the user exist in the database 
     const emailExist = await User.findOne({ email : req.body.email})
     if(emailExist){
@@ -46,6 +51,7 @@ router.post('/register', async (req, res) => {
         address: req.body.address,
         latitude: req.body.latitude,
         longitude: req.body.longitude,
+        acceptedTerms: req.body.acceptedTerms,
     });
     try {
         // generate token to use it when verify the email

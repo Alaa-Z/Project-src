@@ -11,7 +11,8 @@ const registerValidation =  (data) => {
             password: Joi.string().min(6).max(1024).required(),
             address: Joi.required(),
             latitude: Joi.required(),
-            longitude: Joi.required()
+            longitude: Joi.required(),
+            acceptedTerms: Joi.recipient()
 
         }
     );
