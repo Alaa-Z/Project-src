@@ -12,7 +12,7 @@ const registerValidation =  (data) => {
             address: Joi.required(),
             latitude: Joi.required(),
             longitude: Joi.required(),
-            acceptedTerms: Joi.recipient()
+            acceptedTerms: Joi.required()
 
         }
     );
