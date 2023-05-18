@@ -2,6 +2,7 @@ const router = require('express').Router();
 const User = require('../model/User')
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const authMiddleware = require('../middleware/auth');
 
 dotenv.config();
 
@@ -40,4 +41,23 @@ router.get('/', async (req, res) => {
         res.status(400).send('Invalid token.');
     }
 });
+
+// ROUTE TO GET ADMIN'S ID
+router.get('/adminId', authMiddleware, async (req, res) => {
+    try {
+      // Find the admin user based on the email
+      const admin = await User.findOne({ email: process.env.ADMIN_EMAIL });
+  
+      if (!admin) {
+        return res.status(404).send('Admin user not found');
+      }
+  
+      // Return the admin's ID in the response
+      res.send({ adminId: admin._id });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
+    }
+  });
+
 module.exports = router;
