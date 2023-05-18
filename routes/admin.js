@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
             return res.status(403).send('Access denied. Not authorized to access this resource.');
         }
         // Get all users
-        const users = await User.find();
+        const users = await User.find().populate('books');
         // Find the admin using ID stored in the token 
         const admin = await User.findById(verified._id).select('-password');
         
